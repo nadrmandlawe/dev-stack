@@ -1,4 +1,15 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevStack - Development Environment Setup Tool
+
+A modern web application that helps developers quickly set up their development environment by generating custom installation scripts for macOS, Windows, and Linux.
+
+## Features
+
+- **Multi-OS Support**: Generate setup scripts for macOS, Windows, and Linux
+- **Tool Selection**: Choose from a curated list of development tools, IDEs, and utilities
+- **Quick Presets**: Use predefined tool combinations for common development stacks
+- **Custom Scripts**: Generate personalized installation scripts with your project name
+- **Share URLs**: Share your tool selections via URL
+- **Modern UI**: Built with Next.js, TypeScript, and Tailwind CSS
 
 ## Getting Started
 
@@ -16,21 +27,47 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How to Use
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Select Your OS**: Choose your target operating system (macOS, Windows, or Linux)
+2. **Choose Tools**: Browse through categories and select the tools you need
+3. **Generate Script**: Click "Generate Script" to create your custom installation script
+4. **Download or Copy**: Download the script file or copy it to your clipboard
+5. **Run**: Execute the generated script on your target system
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework**: [Next.js 14](https://nextjs.org/) with App Router
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Package Manager**: [Bun](https://bun.sh/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+devstack/
+├── app/                 # Next.js app directory
+├── components/          # React components
+│   ├── ui/             # shadcn/ui components
+│   └── ...             # Custom components
+├── lib/                # Utility functions and data
+│   ├── tools/          # Tool definitions
+│   └── ...             # Script generation logic
+└── public/             # Static assets
+    └── tools/          # Tool icons
+```
 
-## Deploy on Vercel
+## Contributing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Contributions are welcome! Feel free to:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Add new development tools
+- Improve the UI/UX
+- Fix bugs or add features
+- Update tool installation commands
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
