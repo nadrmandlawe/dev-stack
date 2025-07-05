@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
 import Link from "next/link";
 import { Github } from "lucide-react";
+import Image from "next/image";
 
 // Navigation links array to be used in both desktop and mobile menus
 // const navigationLinks = [
@@ -81,7 +82,14 @@ export default function Component() {
           </Popover> */}
           {/* Main nav */}
           <div className="flex items-center gap-6">
-            <Link href="/">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80">
+              <Image
+                src="/devstack.png"
+                alt="DevStack"
+                width={72}
+                height={72}
+                className="size-16"
+              />
               <h1 className="text-2xl font-bold">DevStack</h1>
             </Link>
             {/* Navigation menu */}
