@@ -105,7 +105,7 @@ export default function Component() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <ModeToggle />
-          <Link href="/">
+          <Link href="https://github.com/nadrmandlawe/dev-stack">
             <Button variant="outline" size="icon">
               <Github className="size-4" />
             </Button>
