@@ -10,6 +10,21 @@ import { packageManagers } from './package-managers';
 import { aiMlTools } from './ai-ml-tools';
 import { mobileDevelopment } from './mobile-development';
 import { terminalEnhancements } from './terminal-enhancements';
+import type { LucideIcon } from 'lucide-react';
+import {
+  Wrench,
+  Code2,
+  FileCode,
+  Globe,
+  Boxes,
+  Compass,
+  Cloud,
+  Database,
+  Package,
+  Brain,
+  Smartphone,
+  Terminal,
+} from 'lucide-react';
 
 export type OperatingSystem = 'macos' | 'windows' | 'linux';
 
@@ -36,7 +51,7 @@ export interface Category {
   id: string;
   name: string;
   description: string;
-  icon: string;
+  icon: LucideIcon;
   tools: Tool[];
 }
 
@@ -45,84 +60,84 @@ export const categories: Category[] = [
     id: 'core-tools',
     name: 'Core Tools',
     description: 'Essential development tools and utilities',
-    icon: '🔧',
+    icon: Wrench,
     tools: coreTools,
   },
   {
     id: 'programming-languages',
     name: 'Programming Languages',
     description: 'Programming language runtimes and SDKs',
-    icon: '💻',
+    icon: Code2,
     tools: programmingLanguages,
   },
   {
     id: 'ides-editors',
     name: 'IDEs & Editors',
     description: 'Integrated development environments and code editors',
-    icon: '📝',
+    icon: FileCode,
     tools: idesEditors,
   },
   {
     id: 'web-api-tools',
     name: 'Web & API Tools',
     description: 'Tools for web development and API testing',
-    icon: '🌐',
+    icon: Globe,
     tools: webApiTools,
   },
   {
     id: 'docker-virtualization',
     name: 'Docker & Virtualization',
     description: 'Containerization and virtualization tools',
-    icon: '🐳',
+    icon: Boxes,
     tools: dockerVirtualization,
   },
   {
     id: 'browsers',
     name: 'Browsers',
     description: 'Web browsers for development and testing',
-    icon: '🌍',
+    icon: Compass,
     tools: browsers,
   },
   {
     id: 'cloud-devops',
     name: 'Cloud & DevOps',
     description: 'Cloud platforms and DevOps tools',
-    icon: '☁️',
+    icon: Cloud,
     tools: cloudDevops,
   },
   {
     id: 'database-tools',
     name: 'Database Tools',
     description: 'Database management and development tools',
-    icon: '🗄️',
+    icon: Database,
     tools: databaseTools,
   },
   {
     id: 'package-managers',
     name: 'Package Managers',
     description: 'Language-specific package managers',
-    icon: '📦',
+    icon: Package,
     tools: packageManagers,
   },
   {
     id: 'ai-ml-tools',
     name: 'AI/ML Tools',
     description: 'Artificial intelligence and machine learning tools',
-    icon: '🤖',
+    icon: Brain,
     tools: aiMlTools,
   },
   {
     id: 'mobile-development',
     name: 'Mobile Development',
     description: 'Tools for mobile app development',
-    icon: '📱',
+    icon: Smartphone,
     tools: mobileDevelopment,
   },
   {
     id: 'terminal-enhancements',
     name: 'Terminal Enhancements',
     description: 'Terminal customization and productivity tools',
-    icon: '💻',
+    icon: Terminal,
     tools: terminalEnhancements,
   }
 ];

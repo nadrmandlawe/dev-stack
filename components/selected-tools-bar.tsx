@@ -19,13 +19,13 @@ export function SelectedToolsBar({
         <Badge
           key={tool.id}
           variant="secondary"
-          className="flex items-center text-xs"
+          className="flex items-center text-xs rounded-full px-2.5 py-1 bg-muted/60"
         >
           <span className="truncate">{tool.name}</span>
           <Button
             type="button"
             variant="ghost"
-            className=" hover:text-red-500 p-0 size-3"
+            className="  p-0 size-3 rounded-full"
             onClick={() => onRemove(tool.id)}
             aria-label={`Remove ${tool.name}`}
             size="icon"

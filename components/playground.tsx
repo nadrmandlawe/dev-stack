@@ -1,6 +1,5 @@
 "use client";
 import {
-  Clock,
   Terminal,
   Hammer,
   Copy,
@@ -15,13 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResetButton } from "@/components/reset-button";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import {
-  Stepper,
-  StepperItem,
-  StepperTrigger,
-  StepperIndicator,
-  StepperSeparator,
-} from "@/components/ui/stepper";
+// import { Progress } from "@/components/ui/progress";
 import { ToolCard } from "@/components/tool-card";
 import { OperatingSystem, operatingSystemIcons } from "@/lib/data";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -45,6 +38,7 @@ import { SelectedToolsBar } from "./selected-tools-bar";
 import { Input } from "./ui/input";
 import { Share } from "./share";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PlaygroundEditor() {
   const router = useRouter();
@@ -60,12 +54,32 @@ export default function PlaygroundEditor() {
   const [commandCopied, setCommandCopied] = useState(false);
   const [scriptCopied, setScriptCopied] = useState(false);
 
+  const listVariants = useMemo(
+    () => ({
+      hidden: {},
+      show: {
+        transition: { staggerChildren: 0.04 },
+      },
+    }),
+    []
+  );
+  const itemVariants = useMemo(
+    () => ({
+      hidden: { opacity: 0, y: 6 },
+      show: { opacity: 1, y: 0 },
+    }),
+    []
+  );
+
   // Stepper: each step is a category
   const stepCategories = categories.filter((cat) =>
     cat.tools.some((tool) => tool.compatibleOS.includes(selectedOS))
   );
   const maxStep = stepCategories.length;
   const currentCategory = stepCategories[currentStep - 1];
+  // const progressPercent = Math.round(
+  //   ((currentStep - 1) / Math.max(1, maxStep - 1)) * 100
+  // );
 
   // Selected tools as objects
   const selectedToolObjects = useMemo(
@@ -214,35 +228,52 @@ export default function PlaygroundEditor() {
   };
 
   return (
-    <div className="bg-background overflow-hidden rounded-lg border bg-clip-padding xl:rounded-xl w-full h-full flex-1">
+    <div className="overflow-hidden rounded-2xl border bg-background/60 bg-clip-padding backdrop-blur supports-[backdrop-filter]:bg-background/50 shadow-[0_1px_0_0_rgba(0,0,0,0.04)] dark:shadow-[0_1px_0_0_rgba(255,255,255,0.06)] w-full h-full flex-1">
       <div className="flex-col flex-1 md:flex w-full h-full">
-        <div className=" flex flex-col items-start justify-between gap-2 p-4 sm:flex-row sm:items-center sm:gap-0 md:h-16">
-          {!generatedScript ? (
-            <div className="flex items-center gap-2 w-full">
-              {currentCategory.icon}
-              <div className="flex flex-col">
-                <span className="text-lg font-semibold">
-                  {currentCategory.name}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {currentCategory.description}
-                </span>
+        <div className="relative flex items-center justify-center border-b border-black/5 dark:border-white/5 bg-background/70 rounded-t-2xl h-14">
+          {/* Mac window controls, left */}
+          <div className="flex items-center gap-2 px-4 absolute left-0">
+            <span className="size-3 rounded-full bg-[#ff5f57] border border-black/10" />
+            <span className="size-3 rounded-full bg-[#ffbd2e] border border-black/10" />
+            <span className="size-3 rounded-full bg-[#28c840] border border-black/10" />
+          </div>
+          {/* Centered title */}
+          <div className="flex items-center justify-center pointer-events-none select-none">
+            <span
+              className="text-[15px] font-medium text-foreground/90 tracking-tight leading-none"
+              style={{ letterSpacing: "-0.01em" }}
+            >
+              Dev Environment Builder
+            </span>
+          </div>
+          {/* Progress and Share, right-aligned */}
+          <div className="flex items-center gap-2 px-4 absolute right-0">
+            {/* <div className="inline-flex items-center gap-2 rounded-full border bg-background/60 px-2.5 py-1 text-xs text-muted-foreground backdrop-blur supports-[backdrop-filter]:bg-background/50">
+              <div className="relative h-1.5 w-24 rounded-full bg-muted/60 overflow-hidden">
+                <motion.div
+                  className="absolute inset-y-0 left-0 rounded-full bg-foreground/70"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercent}%` }}
+                  transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.3 }}
+                />
               </div>
-            </div>
-          ) : (
-            <div className="flex flex-col w-full">
-              <div className="flex items-center gap-2">
-                <Check className="size-4 text-green-500" />
-                <span className="text-lg font-semibold">Generated Script</span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Your custom setup script is ready!
-              </p>
-            </div>
-          )}
-          <Share />
+              <span className="tabular-nums">{progressPercent}%</span>
+            </div> */}
+            <Share variant="outline" size="sm" label="Share" />
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <ResetButton
+                onReset={resetSelection}
+                generatedScript={generatedScript}
+                selectedToolObjects={selectedToolObjects}
+              />
+            </motion.div>
+          </div>
         </div>
         <Separator />
+        {/* Removed bottom progress bar for a cleaner mac-like header-driven progress */}
 
         <Tabs
           value={tab}
@@ -253,17 +284,20 @@ export default function PlaygroundEditor() {
             <div className="grid flex-1 items-stretch gap-6 md:grid-cols-[1fr_200px]">
               <div className="flex-col gap-6 sm:flex md:order-2">
                 <div className="flex flex-col gap-4 mt-4">
-                  {(generatedScript || selectedToolObjects.length > 0) && (
-                    <ResetButton onReset={resetSelection} />
-                  )}
                   <div className="flex flex-col gap-2">
                     <Label>Mode</Label>
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="builder">
+                    <TabsList className="grid w-full grid-cols-2  bg-muted/60 px-1">
+                      <TabsTrigger
+                        value="builder"
+                        className=" data-[state=active]:bg-background"
+                      >
                         <Hammer className="size-4" />
                         <span className="">Build</span>
                       </TabsTrigger>
-                      <TabsTrigger value="script">
+                      <TabsTrigger
+                        value="script"
+                        className=" data-[state=active]:bg-background"
+                      >
                         <Terminal className="size-4" />
                         <span className="">Script</span>
                       </TabsTrigger>
@@ -322,16 +356,19 @@ export default function PlaygroundEditor() {
                           <label className="block text-sm font-medium">
                             Selected Tools
                           </label>
-                          <SelectedToolsBar
-                            selectedTools={selectedToolObjects}
-                            onRemove={removeTool}
-                          />
+                          <div>
+                            <SelectedToolsBar
+                              selectedTools={selectedToolObjects}
+                              onRemove={removeTool}
+                            />
+                          </div>
                         </div>
                       )}
 
                       <Button
                         onClick={generateScriptHandler}
                         disabled={selectedToolObjects.length === 0}
+                        className="rounded-full"
                       >
                         <Sparkles className="size-4" /> Generate Script
                       </Button>
@@ -378,7 +415,7 @@ export default function PlaygroundEditor() {
                             onClick={handleCopyCommand}
                             size="sm"
                             variant="outline"
-                            className="size-7 p-0"
+                            className="size-7 p-0 rounded-full"
                           >
                             {commandCopied ? (
                               <Check className="size-3.5" />
@@ -387,21 +424,15 @@ export default function PlaygroundEditor() {
                             )}
                           </Button>
                         </div>
-
-                        {/* <Input
-                          className="text-xs break-all text-green-500 bg-black"
-                          readOnly
-                          value={`$ sh ${
-                            projectName || "setup"
-                          }-${selectedOS}.${
-                            selectedOS === "windows" ? "ps1" : "sh"
-                          }`}
-                        /> */}
-                        <pre className="text-xs break-all text-green-500 bg-muted/50 p-2 rounded-lg border flex items-center">
-                          {`$ sh ${projectName || "setup"}-${selectedOS}.${
-                            selectedOS === "windows" ? "ps1" : "sh"
-                          }`}
-                        </pre>
+                        <div className="relative">
+                          <pre className="text-xs bg-muted/60 p-2 rounded-md border flex items-center overflow-x-auto whitespace-nowrap max-w-full">
+                            <span className="truncate block max-w-full">
+                              {`$ sh ${projectName || "setup"}-${selectedOS}.${
+                                selectedOS === "windows" ? "ps1" : "sh"
+                              }`}
+                            </span>
+                          </pre>
+                        </div>
                       </div>
                     </>
                   )}
@@ -409,89 +440,162 @@ export default function PlaygroundEditor() {
               </div>
 
               <div className="flex flex-1 flex-col *:data-[slot=tab-content]:flex-1 md:order-1 w-full">
-                <TabsContent value="builder" className="mt-0 border-0 p-0">
-                  {/* Stepper */}
+                <TabsContent
+                  value="builder"
+                  className="mt-0 border-0 p-0 h-full"
+                >
+                  <div className="grid gap-4 md:grid-cols-[260px_1fr]">
+                    {/* Sidebar */}
+                    <aside className="rounded-2xl border bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/40">
+                      <ul className="p-2">
+                        {stepCategories.map((cat, idx) => {
+                          const isActive = idx + 1 === currentStep;
+                          return (
+                            <li key={cat.id} className="p-1">
+                              <button
+                                className={`w-full flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition-colors border ${
+                                  isActive
+                                    ? "bg-background border-foreground/10"
+                                    : "hover:bg-muted/60 border-transparent"
+                                }`}
+                                onClick={() => setCurrentStep(idx + 1)}
+                              >
+                                <span className="text-base" aria-hidden>
+                                  <cat.icon className="size-4" />
+                                </span>
+                                <span className="truncate text-left">
+                                  {cat.name}
+                                </span>
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </aside>
 
-                  <div className="flex h-full flex-col gap-4 border rounded-2xl p-4">
-                    <Stepper value={currentStep} onValueChange={setCurrentStep}>
-                      {stepCategories.map((cat, idx) => (
-                        <StepperItem
-                          key={cat.id}
-                          step={idx + 1}
-                          className="not-last:flex-1"
-                        >
-                          <StepperTrigger>
-                            <StepperIndicator />
-                          </StepperTrigger>
-                          {idx < stepCategories.length && <StepperSeparator />}
-                        </StepperItem>
-                      ))}
-                    </Stepper>
-                    {/* Tool selection grid */}
-                    <div className="flex flex-col gap-4 mt-6 h-full">
-                      {currentCategory.tools
-                        .filter((tool) =>
-                          tool.compatibleOS.includes(selectedOS)
-                        )
-                        .map((tool) => (
-                          <ToolCard
-                            key={tool.id}
-                            tool={tool}
-                            selected={selectedTools.has(tool.id)}
-                            onToggle={toggleTool}
-                          />
-                        ))}
-                    </div>
-                    {/* Stepper navigation buttons beneath the tools */}
-                    <div className="flex justify-between mt-6">
-                      <Button
-                        variant="outline"
-                        onClick={() =>
-                          setCurrentStep((s) => Math.max(1, s - 1))
-                        }
-                        disabled={currentStep === 1}
+                    {/* Main pane */}
+                    <motion.section
+                      key={currentCategory?.id}
+                      className="flex flex-col h-full gap-3 rounded-2xl border bg-background/50 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/40"
+                    >
+                      {/* Tool selection list */}
+                      <motion.div
+                        key={`${currentCategory?.id}-${selectedOS}`}
+                        variants={listVariants}
+                        initial="hidden"
+                        animate="show"
+                        className="flex flex-col gap-3"
                       >
-                        Previous
-                      </Button>
-                      {currentStep === maxStep ? (
-                        <Button
-                          onClick={generateScriptHandler}
-                          disabled={selectedToolObjects.length === 0}
-                        >
-                          <Sparkles className="size-4" /> Generate Script
-                        </Button>
-                      ) : (
+                        {currentCategory.tools
+                          .filter((tool) =>
+                            tool.compatibleOS.includes(selectedOS)
+                          )
+                          .map((tool) => (
+                            <motion.div
+                              key={tool.id}
+                              variants={itemVariants}
+                              layout
+                            >
+                              <ToolCard
+                                tool={tool}
+                                selected={selectedTools.has(tool.id)}
+                                onToggle={toggleTool}
+                              />
+                            </motion.div>
+                          ))}
+                      </motion.div>
+
+                      {/* Navigation */}
+                      <div className="mt-auto flex justify-between pt-2">
                         <Button
                           variant="outline"
                           onClick={() =>
-                            setCurrentStep((s) => Math.min(maxStep, s + 1))
+                            setCurrentStep((s) => Math.max(1, s - 1))
                           }
+                          disabled={currentStep === 1}
+                          className="rounded-full"
                         >
-                          Next
+                          Previous
                         </Button>
-                      )}
-                    </div>
+                        {currentStep === maxStep ? (
+                          <Button
+                            onClick={generateScriptHandler}
+                            disabled={selectedToolObjects.length === 0}
+                            className="rounded-full"
+                          >
+                            <Sparkles className="size-4" /> Generate Script
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              setCurrentStep((s) => Math.min(maxStep, s + 1))
+                            }
+                            className="rounded-full"
+                          >
+                            Next
+                          </Button>
+                        )}
+                      </div>
+                    </motion.section>
                   </div>
                 </TabsContent>
 
                 <TabsContent value="script" className="mt-0 border-0 p-0 ">
-                  <div className="flex h-full flex-col gap-4 border rounded-2xl p-4">
-                    {scriptGenerated ? (
-                      <div className="flex flex-col gap-2 break-all">
-                        <pre className="text-xs lg:text-sm text-green-500 bg-black p-4 rounded-lg whitespace-pre-wrap max-h-[500px] overflow-y-auto">
-                          {generatedScript}
-                        </pre>
-                      </div>
-                    ) : (
-                      <div className="h-full min-h-[460px] w-full flex flex-col items-center justify-center bg-muted rounded-2xl">
-                        <div className="outline rounded-lg my-4">
-                          <Clock className="size-6" />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          Select tools and generate a script to get started.
-                        </p>
-                      </div>
-                    )}
+                  <div className="flex h-full flex-col gap-4  rounded-2xl p-4 bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/40">
+                    <AnimatePresence mode="wait">
+                      {scriptGenerated ? (
+                        <motion.div
+                          key="script"
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.2 }}
+                          className="flex flex-col overflow-hidden rounded-2xl border bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/50"
+                        >
+                          {/* Terminal chrome header */}
+                          <div className="relative flex items-center h-10 border-b border-black/5 dark:border-white/5 px-3 bg-background/70">
+                            <div className="flex items-center gap-1.5">
+                              <span className="size-2.5 rounded-full bg-[#ff5f57] border border-black/10" />
+                              <span className="size-2.5 rounded-full bg-[#ffbd2e] border border-black/10" />
+                              <span className="size-2.5 rounded-full bg-[#28c840] border border-black/10" />
+                            </div>
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+                              <span className="text-xs font-medium text-foreground/80 tracking-tight">
+                                {(projectName || "dev-setup") +
+                                  `-${selectedOS}.${
+                                    selectedOS === "windows" ? "ps1" : "sh"
+                                  }`}{" "}
+                                — Script Preview
+                              </span>
+                            </div>
+                          </div>
+                          {/* Code body */}
+                          <div className="relative">
+                            <pre className="text-xs lg:text-sm font-mono text-foreground bg-muted/50 p-4 whitespace-pre-wrap leading-relaxed max-h-[560px] min-h-[460px] overflow-y-auto">
+                              {generatedScript}
+                            </pre>
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="placeholder"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="flex flex-col items-center justify-center border rounded-2xl  bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/50 min-h-[460px] text-center p-8"
+                        >
+                          <div className="rounded-xl border bg-muted/40 px-3 py-2 font-mono text-xs text-muted-foreground">
+                            $ Select tools and generate a script to preview it
+                            here
+                          </div>
+                          <div className="mt-3 text-xs text-muted-foreground">
+                            You can also try a quick presets from the sidebar.
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </TabsContent>
               </div>

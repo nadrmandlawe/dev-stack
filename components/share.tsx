@@ -13,12 +13,32 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 
-export function Share() {
+type ShareProps = {
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
+  size?: "sm" | "default" | "lg" | "icon";
+  className?: string;
+  label?: string;
+  iconOnly?: boolean;
+};
+
+export function Share({
+  variant = "outline",
+  size = "default",
+  className,
+  label = "Share",
+  iconOnly = false,
+}: ShareProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
   const searchParams = useSearchParams();
@@ -39,7 +59,15 @@ export function Share() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
+        <Button
+          variant={variant}
+          size={iconOnly ? "icon" : size}
+          className={className}
+          aria-label={label}
+        >
+          <Share2 className="size-4" />
+          {!iconOnly && <span className="hidden sm:inline">{label}</span>}
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -55,7 +83,12 @@ export function Share() {
             </Label>
             <Input id="link" value={currentUrl} readOnly />
           </div>
-          <Button variant="outline" onClick={handleCopy}>
+          <Button
+            variant="outline"
+            onClick={handleCopy}
+            size="icon"
+            className="rounded-full"
+          >
             {isCopied ? (
               <Check className="size-4 text-green-500" />
             ) : (
