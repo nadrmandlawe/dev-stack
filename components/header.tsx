@@ -27,19 +27,19 @@ export default function Component() {
             {/* Left side */}
             <div className="flex items-center">
               {/* Main nav */}
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
                 <Link
                   href="/"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-1"
                 >
                   <Image
                     src="/dev-logo.png"
                     alt="DevStack"
                     width={72}
                     height={72}
-                    className="size-10 rounded-md"
+                    className="size-8 md:size-10 rounded-md"
                   />
-                  <h1 className="text-xl font-semibold tracking-tight">
+                  <h1 className="text-base md:text-lg font-semibold tracking-tight">
                     DevStack
                   </h1>
                 </Link>
@@ -51,7 +51,7 @@ export default function Component() {
                         <NavigationMenuLink
                           // active={link.active}
                           href={link.href}
-                          className="text-muted-foreground  py-1.5 font-medium"
+                          className="text-muted-foreground font-medium"
                         >
                           {link.label}
                         </NavigationMenuLink>

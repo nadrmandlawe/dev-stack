@@ -542,7 +542,7 @@ export default function PlaygroundEditor() {
                 </TabsContent>
 
                 <TabsContent value="script" className="mt-0 border-0 p-0 ">
-                  <div className="flex h-full flex-col gap-4  rounded-2xl p-4 bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/40">
+                  <div className="flex h-full flex-col gap-4  rounded-2xl bg-background/50 backdrop-blur supports-[backdrop-filter]:bg-background/40">
                     <AnimatePresence mode="wait">
                       {scriptGenerated ? (
                         <motion.div
@@ -572,7 +572,7 @@ export default function PlaygroundEditor() {
                           </div>
                           {/* Code body */}
                           <div className="relative">
-                            <pre className="text-xs lg:text-sm font-mono text-foreground bg-muted/50 p-4 whitespace-pre-wrap leading-relaxed max-h-[560px] min-h-[460px] overflow-y-auto">
+                          <pre className="text-xs lg:text-sm font-mono text-foreground bg-muted/50 p-2 whitespace-pre-wrap leading-relaxed max-h-[560px] min-h-[460px] overflow-auto break-all">
                               {generatedScript}
                             </pre>
                           </div>
